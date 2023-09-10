@@ -2,23 +2,19 @@ package com.example.connectesp32
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
 import com.example.connectesp32.databinding.FragmentStreamBinding
 import io.github.controlwear.virtual.joystick.android.JoystickView
 
-class StreamFragment : Fragment() {
+class StreamFragment : ServerConnection() {
 
     private lateinit var binding: FragmentStreamBinding
     private var ledState: Boolean = false
-    private val serverConnection: ServerConnection = ServerConnection()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,8 +35,7 @@ class StreamFragment : Fragment() {
     }
 
     private fun loadWebView() {
-
-        binding.webView.loadUrl(serverConnection.getUrlAddress())
+        binding.webView.loadUrl(getUrlAddress())
     }
 
     private fun changeEnginePower() {
@@ -59,15 +54,19 @@ class StreamFragment : Fragment() {
 
             val params = mapOf("value" to power.toString())
 
-            serverConnection.sendGetRequest("dioda", params) { isServerReady ->
-                if (isServerReady) {
-                    binding.led.text = if (ledState) getString(R.string.ledOn) else getString(R.string.ledOff)
-                } else {
-                    ledState = !ledState
-                }
-            }
+            sendGetRequest("dioda", params)
         }
 
+    }
+
+    override fun handleResponse(responseSuccessful: Boolean) {
+        handler.post {
+            if (responseSuccessful) {
+                binding.led.text = if (ledState) getString(R.string.ledOn) else getString(R.string.ledOff)
+            } else {
+                ledState = !ledState
+            }
+        }
     }
 
     private fun setupWebView() {

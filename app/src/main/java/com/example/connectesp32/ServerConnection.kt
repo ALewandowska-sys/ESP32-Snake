@@ -1,27 +1,29 @@
 package com.example.connectesp32
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import androidx.fragment.app.Fragment
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
 
-class ServerConnection {
+abstract class ServerConnection : Fragment() {
 
     private val hostAddress : String = "192.168.4.1"
     private val client = OkHttpClient()
-    private var serverIsReady: Boolean = false
+    private var responseSuccessful: Boolean = false
+    val handler = Handler(Looper.getMainLooper())
 
     fun getUrlAddress(): String{
         return "http://$hostAddress"
     }
 
-    fun sendGetRequest(path: String, params: Map<String, String>, callback: (Boolean) -> Unit) {
+    fun sendGetRequest(path: String, params: Map<String, String>) {
 
         val httpUrl = HttpUrl.Builder()
             .scheme("http")
@@ -42,16 +44,19 @@ class ServerConnection {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                serverIsReady = false
+                responseSuccessful = false
                 Log.e("Exception for GET", e.toString())
+                handleResponse(responseSuccessful)
             }
 
             override fun onResponse(call: Call, response: Response) {
                 Log.d("Response for GET", response.toString())
-                serverIsReady = response.isSuccessful
+                responseSuccessful = response.isSuccessful
                 response.close()
-                callback(serverIsReady)
+                handleResponse(responseSuccessful)
             }
         })
     }
+
+    abstract fun handleResponse(responseSuccessful: Boolean)
 }
