@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Snake robot</string>
+    <string name="title">Aby rozpocząć\nsterowanie robotem,\npołącz się z WiFi</string>
+    <string name="properties">WiFi: snake\nHasło: 1234567890</string>
+    <string name="start">Start</string>
+    <string name="ledOn">Włącz diodę</string>
+    <string name="ledOff">Wyłącz diodę</string>
+    <string name="info">Robot nie jest gotowy do podłączenia.\nSprawdź, czy:\n
+        - Jesteś połączony z WiFi robota\n - Nikt inny nie steruje teraz robotem\n</string>
+    <string name="default_angle">0°</string>
+    <string name="default_power">0%</string>
+</resources>
