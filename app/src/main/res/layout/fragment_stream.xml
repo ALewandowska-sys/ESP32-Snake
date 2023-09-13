@@ -21,28 +21,10 @@
             android:layout_margin="10dp"
             custom:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/textViewAngle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            custom:layout_constraintBottom_toTopOf="@+id/textViewStrength"
-            custom:layout_constraintEnd_toEndOf="parent"
-            custom:layout_constraintStart_toEndOf="@+id/webView"
-            custom:layout_constraintTop_toTopOf="parent"
-            android:text="@string/default_angle" />
-
-        <TextView
-            android:id="@+id/textViewStrength"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            custom:layout_constraintBottom_toTopOf="@+id/joystickView"
-            custom:layout_constraintEnd_toEndOf="parent"
-            custom:layout_constraintStart_toEndOf="@+id/webView"
-            custom:layout_constraintTop_toTopOf="@id/textViewAngle"
-            android:text="@string/default_power" />
 
         <io.github.controlwear.virtual.joystick.android.JoystickView
             android:id="@+id/joystickView"
+            android:rotation="90"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             custom:JV_backgroundColor="@color/purple_200"
@@ -54,12 +36,13 @@
             custom:layout_constraintEnd_toEndOf="parent"
             custom:layout_constraintStart_toEndOf="@+id/webView"
             custom:layout_constraintTop_toTopOf="parent"
+            custom:layout_constraintVertical_bias="0.4"
             custom:layout_constraintWidth_percent="0.25" />
 
         <Button
             android:id="@+id/led"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:text="@string/ledOn"
             android:textSize="12sp"
             custom:layout_constraintBottom_toBottomOf="parent"

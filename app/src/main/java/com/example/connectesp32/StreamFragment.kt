@@ -2,19 +2,26 @@ package com.example.connectesp32
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.example.connectesp32.databinding.FragmentStreamBinding
 import io.github.controlwear.virtual.joystick.android.JoystickView
 
-class StreamFragment : ServerConnection() {
+class StreamFragment : Fragment() {
 
     private lateinit var binding: FragmentStreamBinding
     private var ledState: Boolean = false
+    private var engineSetUp: EngineSetUp = EngineSetUp()
+    private var serverConnection: ServerConnection = ServerConnection()
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,8 +32,8 @@ class StreamFragment : ServerConnection() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_stream, container, false
         )
-        changeEnginePower()
-        changeLedPower()
+        handleJoystick()
+        handleLedButton()
 
         setupWebView()
         loadWebView()
@@ -35,18 +42,19 @@ class StreamFragment : ServerConnection() {
     }
 
     private fun loadWebView() {
-        binding.webView.loadUrl(getUrlAddress())
+        Log.d("URL: ", serverConnection.getUrlAddress())
+        binding.webView.loadUrl(serverConnection.getUrlAddress())
+        // reload if it is problem with stream
     }
 
-    private fun changeEnginePower() {
+    private fun handleJoystick() {
         val joystick: JoystickView = binding.joystickView
         joystick.setOnMoveListener { angle, strength ->
-            binding.textViewAngle.text = "$angle°"
-            binding.textViewStrength.text = "$strength%"
+            engineSetUp.handleJoystick(angle, strength)
         }
     }
 
-    private fun changeLedPower() {
+    private fun handleLedButton() {
         var power: Int
         binding.led.setOnClickListener {
             power = if (ledState) 0 else 255
@@ -54,12 +62,14 @@ class StreamFragment : ServerConnection() {
 
             val params = mapOf("value" to power.toString())
 
-            sendGetRequest("dioda", params)
+            serverConnection.sendGetRequest("dioda", params) { responseSuccessful: Boolean ->
+                handleResponse(responseSuccessful)
+            }
         }
 
     }
 
-    override fun handleResponse(responseSuccessful: Boolean) {
+    private fun handleResponse(responseSuccessful: Boolean) {
         handler.post {
             if (responseSuccessful) {
                 binding.led.text = if (ledState) getString(R.string.ledOn) else getString(R.string.ledOff)

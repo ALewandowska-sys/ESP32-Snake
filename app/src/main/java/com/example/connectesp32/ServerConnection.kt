@@ -1,9 +1,6 @@
 package com.example.connectesp32
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.HttpUrl
@@ -12,18 +9,17 @@ import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
 
-abstract class ServerConnection : Fragment() {
+class ServerConnection {
 
     private val hostAddress : String = "192.168.4.1"
     private val client = OkHttpClient()
     private var responseSuccessful: Boolean = false
-    val handler = Handler(Looper.getMainLooper())
 
     fun getUrlAddress(): String{
         return "http://$hostAddress"
     }
 
-    fun sendGetRequest(path: String, params: Map<String, String>) {
+    fun sendGetRequest(path: String, params: Map<String, String>, handleResponse: (Boolean) -> Unit) {
 
         val httpUrl = HttpUrl.Builder()
             .scheme("http")
@@ -57,6 +53,4 @@ abstract class ServerConnection : Fragment() {
             }
         })
     }
-
-    abstract fun handleResponse(responseSuccessful: Boolean)
 }
