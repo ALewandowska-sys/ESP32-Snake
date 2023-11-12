@@ -1,6 +1,5 @@
 package com.example.connectesp32
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -27,24 +26,38 @@ class StreamFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_stream, container, false
         )
-        handleJoystick()
-        handleLedButton()
 
         setupWebView()
-        loadWebView()
+        handleReloadButton()
+        setControl()
 
         return binding.root
+    }
+
+    private fun setControl() {
+        val control = arguments?.getBoolean("control", false)
+        setControlVisibility(control == true)
+        if (control == true) {
+            handleJoystick()
+            handleLedButton()
+        }
+    }
+
+    private fun setControlVisibility(visible: Boolean) {
+        binding.errorTest.visibility = if (visible) View.INVISIBLE else View.VISIBLE
+        binding.controlPanel.visibility = if (visible) View.VISIBLE else View.INVISIBLE
+    }
+
+    private fun handleReloadButton() {
+        binding.reloadButton.setOnClickListener { loadWebView() }
     }
 
     private fun loadWebView() {
         Log.d("URL: ", serverConnection.getUrlAddress())
         binding.webView.loadUrl(serverConnection.getUrlAddress())
-        // reload if it is problem with stream
     }
 
     private fun handleJoystick() {
@@ -61,18 +74,18 @@ class StreamFragment : Fragment() {
             ledState = !ledState
 
             val params = mapOf("value" to power.toString())
-
             serverConnection.sendGetRequest("dioda", params) { responseSuccessful: Boolean ->
+                Log.d("RESPONSE: ", "for value $power is: $responseSuccessful")
                 handleResponse(responseSuccessful)
             }
+            binding.led.text = if (ledState) getString(R.string.ledOff) else getString(R.string.ledOn)
         }
-
     }
 
     private fun handleResponse(responseSuccessful: Boolean) {
         handler.post {
             if (responseSuccessful) {
-                binding.led.text = if (ledState) getString(R.string.ledOn) else getString(R.string.ledOff)
+                binding.led.text = if (ledState) getString(R.string.ledOff) else getString(R.string.ledOn)
             } else {
                 ledState = !ledState
             }
@@ -87,6 +100,8 @@ class StreamFragment : Fragment() {
         webSettings.builtInZoomControls = true
         webSettings.displayZoomControls = false
         binding.webView.webChromeClient = WebChromeClient()
+
+        loadWebView()
     }
 
 }
