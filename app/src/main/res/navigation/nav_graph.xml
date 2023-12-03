@@ -21,6 +21,10 @@
         android:name="com.example.connectesp32.StreamFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_stream">
+        <argument
+            android:name="control"
+            app:argType="boolean"
+            android:defaultValue="false" />
         <action
             android:id="@+id/action_streamFragment_to_mainFragment"
             app:destination="@id/mainFragment" />

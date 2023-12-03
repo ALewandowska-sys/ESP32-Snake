@@ -10,46 +10,73 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".StreamFragment"
-        android:screenOrientation="landscape">
+        tools:context=".StreamFragment">
 
         <WebView
             android:id="@+id/webView"
-            android:layout_height="match_parent"
-            android:layout_width="0dp"
-            custom:layout_constraintWidth_percent="0.65"
-            android:layout_margin="10dp"
-            custom:layout_constraintStart_toStartOf="parent" />
-
-
-        <io.github.controlwear.virtual.joystick.android.JoystickView
-            android:id="@+id/joystickView"
-            android:rotation="90"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            custom:JV_backgroundColor="@color/purple_200"
-            custom:JV_borderColor="@color/purple_200"
-            custom:JV_borderWidth="5dp"
-            custom:JV_buttonColor="@color/purple_500"
-            custom:JV_buttonSizeRatio="25%"
-            custom:layout_constraintBottom_toBottomOf="parent"
-            custom:layout_constraintEnd_toEndOf="parent"
-            custom:layout_constraintStart_toEndOf="@+id/webView"
-            custom:layout_constraintTop_toTopOf="parent"
-            custom:layout_constraintVertical_bias="0.4"
-            custom:layout_constraintWidth_percent="0.25" />
-
-        <Button
-            android:id="@+id/led"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:text="@string/ledOn"
-            android:textSize="12sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:minWidth="350dp"
+            android:minHeight="300dp"
+            custom:layout_constraintStart_toStartOf="parent"
+            custom:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/reloadButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            custom:layout_constraintStart_toStartOf="parent"
+            custom:layout_constraintTop_toBottomOf="@+id/webView"
+            custom:srcCompat="@drawable/ic_reload" />
+
+        <TextView
+            android:id="@+id/errorTest"
+            style="@style/text"
+            android:layout_width="200dp"
+            android:layout_margin="30dp"
+            android:gravity="center"
+            android:text="@string/errorTest"
+            android:textColor="@color/red"
+            android:textSize="20sp"
+            android:visibility="invisible"
             custom:layout_constraintBottom_toBottomOf="parent"
             custom:layout_constraintEnd_toEndOf="parent"
-            custom:layout_constraintStart_toEndOf="@+id/webView"
-            custom:layout_constraintTop_toBottomOf="@+id/joystickView"
-            custom:layout_constraintVertical_bias="0.1" />
+            custom:layout_constraintStart_toStartOf="parent"
+            custom:layout_constraintTop_toBottomOf="@+id/webView" />
+
+        <LinearLayout
+            android:id="@+id/controlPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            custom:layout_constraintBottom_toBottomOf="parent"
+            custom:layout_constraintEnd_toEndOf="parent"
+            custom:layout_constraintStart_toStartOf="parent"
+            custom:layout_constraintTop_toBottomOf="@+id/webView">
+
+            <io.github.controlwear.virtual.joystick.android.JoystickView
+                android:id="@+id/joystickView"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:rotation="90"
+                custom:JV_backgroundColor="@color/purple_200"
+                custom:JV_borderColor="@color/purple_200"
+                custom:JV_borderWidth="5dp"
+                custom:JV_buttonColor="@color/purple_500"
+                custom:JV_buttonSizeRatio="25%" />
+
+            <Button
+                android:id="@+id/engine"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="@string/engineOn"
+                android:textSize="12sp" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

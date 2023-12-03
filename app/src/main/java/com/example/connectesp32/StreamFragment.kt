@@ -17,7 +17,7 @@ import io.github.controlwear.virtual.joystick.android.JoystickView
 class StreamFragment : Fragment() {
 
     private lateinit var binding: FragmentStreamBinding
-    private var ledState: Boolean = false
+    private var engineState: Boolean = false
     private var engineSetUp: EngineSetUp = EngineSetUp()
     private var serverConnection: ServerConnection = ServerConnection()
     private val handler = Handler(Looper.getMainLooper())
@@ -42,7 +42,7 @@ class StreamFragment : Fragment() {
         setControlVisibility(control == true)
         if (control == true) {
             handleJoystick()
-            handleLedButton()
+            handleEngineButton()
         }
     }
 
@@ -67,27 +67,27 @@ class StreamFragment : Fragment() {
         }
     }
 
-    private fun handleLedButton() {
+    private fun handleEngineButton() {
         var power: Int
-        binding.led.setOnClickListener {
-            power = if (ledState) 0 else 255
-            ledState = !ledState
+        binding.engine.setOnClickListener {
+            power = if (engineState) 0 else 255
+            engineState = !engineState
 
             val params = mapOf("value" to power.toString())
-            serverConnection.sendGetRequest("dioda", params) { responseSuccessful: Boolean ->
+            serverConnection.sendGetRequest("start", params) { responseSuccessful: Boolean ->
                 Log.d("RESPONSE: ", "for value $power is: $responseSuccessful")
                 handleResponse(responseSuccessful)
             }
-            binding.led.text = if (ledState) getString(R.string.ledOff) else getString(R.string.ledOn)
+            binding.engine.text = if (engineState) getString(R.string.engineOff) else getString(R.string.engineOn)
         }
     }
 
     private fun handleResponse(responseSuccessful: Boolean) {
         handler.post {
             if (responseSuccessful) {
-                binding.led.text = if (ledState) getString(R.string.ledOff) else getString(R.string.ledOn)
+                binding.engine.text = if (engineState) getString(R.string.engineOff) else getString(R.string.engineOn)
             } else {
-                ledState = !ledState
+                engineState = !engineState
             }
         }
     }
