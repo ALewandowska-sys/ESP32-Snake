@@ -11,6 +11,7 @@ import okio.IOException
 
 class ServerConnection {
 
+    lateinit var responseMessage: String
     private val hostAddress : String = "192.168.4.1"
     private val client = OkHttpClient()
     private var responseSuccessful: Boolean = false
@@ -48,6 +49,7 @@ class ServerConnection {
             override fun onResponse(call: Call, response: Response) {
                 Log.d("Response for GET", response.toString())
                 responseSuccessful = response.isSuccessful
+                responseMessage = response.body?.byteString()?.utf8() ?: ""
                 response.close()
                 handleResponse(responseSuccessful)
             }

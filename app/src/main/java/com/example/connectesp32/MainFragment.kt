@@ -35,6 +35,8 @@ class MainFragment : Fragment() {
     }
 
     private fun tryToConnect() {
+        binding.loadingIndicator.visibility = View.VISIBLE
+        binding.start.isEnabled = false
         serverConnection.sendGetRequest("test", mapOf()) { responseSuccessful: Boolean ->
             handleResponse(responseSuccessful)
         }
@@ -42,13 +44,14 @@ class MainFragment : Fragment() {
 
     private fun handleResponse(responseSuccessful: Boolean) {
         handler.post {
+            binding.loadingIndicator.visibility = View.GONE
+            binding.start.isEnabled = true
             if (responseSuccessful) {
                 val bundle = Bundle()
-                bundle.putBoolean("control", true)
+                bundle.putBoolean("control", serverConnection.responseMessage == "true")
                 mainView.findNavController().navigate(R.id.action_mainFragment_to_streamFragment, bundle)
             } else {
                 binding.info.visibility = View.VISIBLE
-                mainView.findNavController().navigate(R.id.action_mainFragment_to_streamFragment)
             }
         }
     }

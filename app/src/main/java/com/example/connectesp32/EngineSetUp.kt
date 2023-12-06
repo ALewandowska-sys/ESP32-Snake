@@ -1,31 +1,21 @@
 package com.example.connectesp32
 
 import android.util.Log
-import kotlin.math.abs
 import kotlin.math.cos
 
 class EngineSetUp {
 
-    private var angle: Int = -1
-    private var power: Int = -1
-    private val threshold = 10
-    private val cooldownMillis = 1000 // 1 second cooldown
-    private var lastExecutionTime: Long = 0
+    private var ready = true
     private val pathForEngine = "engine"
     private var serverConnection: ServerConnection = ServerConnection()
 
     fun handleJoystick(newAngle: Int, newPower: Int) {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastExecutionTime >= cooldownMillis) {
-            if (abs(newAngle - angle) >= threshold || abs(newPower - power) >= threshold) {
-                val percentOfPower = newPower.toFloat() / 100
-                val valuesForEngines = calculatePowerForEngine(newAngle, percentOfPower)
-                Log.d("VALUE: ", valuesForEngines.toString())
-                sendRequestToServer(valuesForEngines.first, valuesForEngines.second)
-                angle = newAngle
-                power = newPower
-                lastExecutionTime = currentTime
-            }
+        if (ready) {
+            ready = false
+            val percentOfPower = newPower.toFloat() / 100
+            val valuesForEngines = calculatePowerForEngine(newAngle, percentOfPower)
+            Log.d("VALUE: ", valuesForEngines.toString())
+            sendRequestToServer(valuesForEngines.first, valuesForEngines.second)
         }
     }
 
@@ -48,6 +38,8 @@ class EngineSetUp {
         val paramL = mapOf("left" to leftPower.toString())
         val paramR = mapOf("right" to rightPower.toString())
         Log.d("SEND ENGINE:", "left - $paramL,right - $paramR")
-        serverConnection.sendGetRequest(pathForEngine, paramL + paramR) { }
+        serverConnection.sendGetRequest(pathForEngine, paramL + paramR) { responseSuccessful: Boolean ->
+            ready = responseSuccessful
+        }
     }
 }

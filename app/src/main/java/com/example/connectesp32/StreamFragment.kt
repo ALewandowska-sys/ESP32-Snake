@@ -70,6 +70,7 @@ class StreamFragment : Fragment() {
     private fun handleEngineButton() {
         var power: Int
         binding.engine.setOnClickListener {
+            binding.engine.isEnabled = false
             power = if (engineState) 0 else 255
             engineState = !engineState
 
@@ -78,7 +79,6 @@ class StreamFragment : Fragment() {
                 Log.d("RESPONSE: ", "for value $power is: $responseSuccessful")
                 handleResponse(responseSuccessful)
             }
-            binding.engine.text = if (engineState) getString(R.string.engineOff) else getString(R.string.engineOn)
         }
     }
 
@@ -86,6 +86,7 @@ class StreamFragment : Fragment() {
         handler.post {
             if (responseSuccessful) {
                 binding.engine.text = if (engineState) getString(R.string.engineOff) else getString(R.string.engineOn)
+                binding.engine.isEnabled = true
             } else {
                 engineState = !engineState
             }
