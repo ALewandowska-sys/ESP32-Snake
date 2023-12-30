@@ -3,8 +3,5 @@
     <string name="title">Aby rozpocząć\nsterowanie robotem,\npołącz się z WiFi</string>
     <string name="properties">WiFi: snake\nHasło: 1234567890</string>
     <string name="start">Start</string>
-    <string name="engineOn">Włącz silniki</string>
-    <string name="engineOff">Wyłącz silniki</string>
     <string name="errorWifi">Połącz się z WiFi</string>
-    <string name="errorTest">Nie możesz sterować robotem</string>
 </resources>

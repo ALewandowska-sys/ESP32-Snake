@@ -25,7 +25,10 @@ class MainFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_main, container, false
         )
-
+        val error = arguments?.getBoolean("error", false)
+        if(error == true){
+            binding.info.visibility = View.VISIBLE
+        }
         binding.start.setOnClickListener { view: View ->
             mainView = view
             tryToConnect()
@@ -47,9 +50,7 @@ class MainFragment : Fragment() {
             binding.loadingIndicator.visibility = View.GONE
             binding.start.isEnabled = true
             if (responseSuccessful) {
-                val bundle = Bundle()
-                bundle.putBoolean("control", serverConnection.responseMessage == "true")
-                mainView.findNavController().navigate(R.id.action_mainFragment_to_streamFragment, bundle)
+                mainView.findNavController().navigate(R.id.action_mainFragment_to_streamFragment)
             } else {
                 binding.info.visibility = View.VISIBLE
             }

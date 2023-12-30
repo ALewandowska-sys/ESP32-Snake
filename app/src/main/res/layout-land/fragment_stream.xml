@@ -24,52 +24,22 @@
         custom:layout_constraintTop_toTopOf="parent"
         custom:srcCompat="@drawable/ic_reload" />
 
-    <TextView
-        android:id="@+id/errorTest"
-        style="@style/text"
+    <io.github.controlwear.virtual.joystick.android.JoystickView
+        android:id="@+id/joystickView"
         android:layout_width="200dp"
-        android:gravity="center"
-        android:text="@string/errorTest"
-        android:textColor="@color/red"
-        android:textSize="20sp"
-        android:visibility="invisible"
-        custom:layout_constraintBottom_toBottomOf="parent"
-        custom:layout_constraintEnd_toEndOf="parent"
-        custom:layout_constraintStart_toEndOf="@+id/webView"
-        custom:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/controlPanel"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
+        android:visibility="visible"
         custom:layout_constraintBottom_toBottomOf="parent"
         custom:layout_constraintEnd_toEndOf="parent"
         custom:layout_constraintStart_toEndOf="@+id/webView"
-        custom:layout_constraintTop_toTopOf="parent">
-
-        <io.github.controlwear.virtual.joystick.android.JoystickView
-            android:id="@+id/joystickView"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="50dp"
-            android:rotation="90"
-            custom:JV_backgroundColor="@color/purple_200"
-            custom:JV_borderColor="@color/purple_200"
-            custom:JV_borderWidth="5dp"
-            custom:JV_buttonColor="@color/purple_500"
-            custom:JV_buttonSizeRatio="25%" />
-
-        <Button
-            android:id="@+id/engine"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginBottom="70dp"
-            android:text="@string/engineOn"
-            android:textSize="12sp" />
-
-    </LinearLayout>
+        custom:layout_constraintTop_toTopOf="parent"
+        android:rotation="90"
+        custom:JV_backgroundColor="@color/purple_200"
+        custom:JV_borderColor="@color/purple_200"
+        custom:JV_borderWidth="5dp"
+        custom:JV_buttonColor="@color/purple_500"
+        custom:JV_buttonSizeRatio="25%" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
