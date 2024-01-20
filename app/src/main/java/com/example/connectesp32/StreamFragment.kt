@@ -14,6 +14,7 @@ import io.github.controlwear.virtual.joystick.android.JoystickView
 
 class StreamFragment : Fragment() {
 
+    private val pathForStream = "/stream"
     private lateinit var binding: FragmentStreamBinding
     private var engineSetUp: EngineSetUp = EngineSetUp()
     private var serverConnection: ServerConnection = ServerConnection()
@@ -38,14 +39,18 @@ class StreamFragment : Fragment() {
     }
 
     private fun loadWebView() {
-        Log.d("URL: ", serverConnection.getUrlAddress())
-        binding.webView.loadUrl(serverConnection.getUrlAddress())
+        Log.d("URL: ", serverConnection.getUrlAddress() + pathForStream)
+        binding.webView.loadUrl(serverConnection.getUrlAddress() + pathForStream)
     }
 
     private fun handleJoystick() {
+        binding.engineLValues.text = getString(R.string.left_value, "0")
+        binding.engineRValues.text = getString(R.string.right_value, "0")
         val joystick: JoystickView = binding.joystickView
         joystick.setOnMoveListener { angle, strength ->
-            engineSetUp.handleJoystick(angle, strength)
+            val valuesForEngines = engineSetUp.handleJoystick(angle, strength)
+            binding.engineLValues.text = getString(R.string.left_value, valuesForEngines.first.toString())
+            binding.engineRValues.text = getString(R.string.right_value, valuesForEngines.second.toString())
         }
     }
 

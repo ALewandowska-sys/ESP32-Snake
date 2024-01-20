@@ -42,4 +42,24 @@
         custom:JV_buttonColor="@color/purple_500"
         custom:JV_buttonSizeRatio="25%" />
 
+    <TextView
+        android:id="@+id/engineLValues"
+        style="@style/text"
+        android:text="@string/left_value"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        custom:layout_constraintEnd_toEndOf="parent"
+        custom:layout_constraintStart_toEndOf="@+id/webView"
+        custom:layout_constraintTop_toBottomOf="@+id/joystickView" />
+
+    <TextView
+        android:id="@+id/engineRValues"
+        style="@style/text"
+        android:text="@string/right_value"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        custom:layout_constraintEnd_toEndOf="parent"
+        custom:layout_constraintStart_toEndOf="@+id/webView"
+        custom:layout_constraintTop_toBottomOf="@+id/engineLValues" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

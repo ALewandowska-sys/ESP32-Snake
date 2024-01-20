@@ -4,4 +4,6 @@
     <string name="properties">WiFi: snake\nHasło: 1234567890</string>
     <string name="start">Start</string>
     <string name="errorWifi">Połącz się z WiFi</string>
+    <string name="left_value">Lewy silnik: %s</string>
+    <string name="right_value">Prawy silnik: %s</string>
 </resources>

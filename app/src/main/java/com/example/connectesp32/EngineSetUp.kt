@@ -8,48 +8,50 @@ class EngineSetUp {
 
     private val pathForEngine = "engine"
     private var serverConnection: ServerConnection = ServerConnection()
-    private val threshold = 10
+    private val valueThreshold = 10
+    private val timeThreshold = 200
     private var lastSentTime = 0L
+    private var lastLeftEngineValue = 0
+    private var lastRightEngineValue = 0
 
-    fun handleJoystick(newAngle: Int, newPower: Int) {
+    fun handleJoystick(newAngle: Int, newPower: Int): Pair<Int, Int> {
         val percentOfPower = newPower.toFloat() / 100
         val valuesForEngines = calculatePowerForEngines(newAngle, percentOfPower)
-        if (shouldSendRequest(valuesForEngines.first, valuesForEngines.second)) {
+        if (shouldSendRequest(newAngle, newPower)) {
             sendRequestToServer(valuesForEngines.first, valuesForEngines.second)
             lastSentTime = System.currentTimeMillis()
         }
+        return valuesForEngines
     }
 
     private fun shouldSendRequest(leftEngineValue: Int, rightEngineValue: Int): Boolean {
         val currentTime = System.currentTimeMillis()
-        if (currentTime - lastSentTime > threshold) {
-            if (abs(leftEngineValue) > threshold || abs(rightEngineValue) > threshold) {
+        if (currentTime - lastSentTime > timeThreshold) {
+            if (abs(leftEngineValue - lastLeftEngineValue) > valueThreshold ||
+                abs(rightEngineValue - lastRightEngineValue) > valueThreshold) {
+                lastLeftEngineValue = leftEngineValue
+                lastRightEngineValue = rightEngineValue
                 return true
             }
         }
         return false
     }
 
-
     private fun calculatePowerForEngines(angle: Int, percentOfPower: Float): Pair<Int, Int> {
-        val normalizedAngle = (angle % 360 + 360) % 360
-        val half = 255 / 2
-        var x = when {
-            normalizedAngle <= 90 -> half + half * cos(Math.toRadians(normalizedAngle.toDouble()))
-            normalizedAngle <= 180 -> half - half * cos(Math.toRadians(normalizedAngle.toDouble() - 90))
-            normalizedAngle <= 270 -> half - half * cos(Math.toRadians(normalizedAngle.toDouble() - 180))
-            else -> half + half * cos(Math.toRadians(normalizedAngle.toDouble() - 270))
-        }.toFloat()
-        x *= percentOfPower
-        val y = 255 * percentOfPower - x
-
-        return Pair(x.toInt(), y.toInt())
+        val halfOfMaximum = 255 / 2
+        val preparedAngle = Math.toRadians(angle.toDouble()/2)
+        var leftEngineValue = halfOfMaximum + halfOfMaximum * cos(preparedAngle)
+        leftEngineValue *= percentOfPower
+        val rightEngineValue = 255 * percentOfPower - leftEngineValue
+        val finalLeft = leftEngineValue.toInt().takeIf { it >= 30 } ?: 0
+        val finalRight = rightEngineValue.toInt().takeIf { it >= 30 } ?: 0
+        return Pair(finalLeft, finalRight)
     }
 
     private fun sendRequestToServer(leftPower: Int, rightPower: Int) {
         val paramL = mapOf("left" to leftPower.toString())
         val paramR = mapOf("right" to rightPower.toString())
-        Log.d("SEND ENGINE:", "left - $paramL,right - $paramR")
+        Log.d("SEND ENGINE:", "$paramL, $paramR")
         serverConnection.sendGetRequest(pathForEngine, paramL + paramR) {}
     }
 }
