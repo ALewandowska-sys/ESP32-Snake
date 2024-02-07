@@ -9,8 +9,6 @@ class EngineSetUp {
     private val pathForEngine = "engine"
     private var serverConnection: ServerConnection = ServerConnection()
     private val valueThreshold = 10
-    private val timeThreshold = 200
-    private var lastSentTime = 0L
     private var lastLeftEngineValue = 0
     private var lastRightEngineValue = 0
 
@@ -19,20 +17,16 @@ class EngineSetUp {
         val valuesForEngines = calculatePowerForEngines(newAngle, percentOfPower)
         if (shouldSendRequest(newAngle, newPower)) {
             sendRequestToServer(valuesForEngines.first, valuesForEngines.second)
-            lastSentTime = System.currentTimeMillis()
         }
         return valuesForEngines
     }
 
     private fun shouldSendRequest(leftEngineValue: Int, rightEngineValue: Int): Boolean {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastSentTime > timeThreshold) {
-            if (abs(leftEngineValue - lastLeftEngineValue) > valueThreshold ||
-                abs(rightEngineValue - lastRightEngineValue) > valueThreshold) {
-                lastLeftEngineValue = leftEngineValue
-                lastRightEngineValue = rightEngineValue
-                return true
-            }
+        if (abs(leftEngineValue - lastLeftEngineValue) > valueThreshold ||
+            abs(rightEngineValue - lastRightEngineValue) > valueThreshold) {
+            lastLeftEngineValue = leftEngineValue
+            lastRightEngineValue = rightEngineValue
+            return true
         }
         return false
     }
